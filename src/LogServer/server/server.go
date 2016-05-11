@@ -4,10 +4,13 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
+	"log"
 	"net"
 	"net/http"
 	"os"
+	"os/signal"
 	"strings"
+	"syscall"
 	"time"
 )
 
@@ -45,11 +48,11 @@ func Listen(addr string) error {
 		MaxHeaderBytes: 10240,
 	}
 
-	return listenAndServe(srv)
+	return listenServer(srv)
 
 }
 
-func listenAndServe(srv http.Server) error {
+func listenServer(srv http.Server) error {
 
 	var proto string
 
@@ -63,6 +66,7 @@ func listenAndServe(srv http.Server) error {
 		if err != nil {
 			return err
 		}
+		autoRemoveUnixSocketFile(srv.Addr)
 	} else {
 		proto = "tcp"
 	}
@@ -101,5 +105,34 @@ func checkFileExists(file string) (bool, error) {
 	} else {
 		return true, nil
 	}
+
+}
+
+func autoRemoveUnixSocketFile(file string) {
+
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig,
+		os.Interrupt,
+		syscall.SIGTERM,
+		syscall.SIGINT,
+		syscall.SIGQUIT)
+
+	removeFile := func(s os.Signal) {
+		log.Printf("get signal %s, trying to remove unix socket file %s before process exit\n", s, file)
+		err := os.Remove(file)
+		if err != nil {
+			log.Printf("fail to remove file: %s\n", err)
+		}
+		log.Printf("exit\n")
+		os.Exit(0)
+	}
+
+	go func() {
+		s := <-sig
+		switch s {
+		case os.Interrupt, syscall.SIGTERM, syscall.SIGINT, syscall.SIGQUIT:
+			removeFile(s)
+		}
+	}()
 
 }
