@@ -2,15 +2,3 @@
 // Under the MIT License
 
 package server
-
-import "LogServer/utils"
-
-func setDir(dir string) error {
-
-	if err := utils.Mkdirp(dir); err != nil {
-		return err
-	}
-
-	return nil
-
-}

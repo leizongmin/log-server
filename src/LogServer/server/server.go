@@ -4,6 +4,7 @@
 package server
 
 import (
+	"LogServer/utils"
 	"errors"
 	"fmt"
 	"log"
@@ -133,5 +134,15 @@ func autoRemoveUnixSocketFile(file string) {
 			removeFile(s)
 		}
 	}()
+
+}
+
+func setDir(dir string) error {
+
+	if err := utils.Mkdirp(dir); err != nil {
+		return err
+	}
+
+	return nil
 
 }
