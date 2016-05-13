@@ -8,7 +8,8 @@ import (
 	"os"
 )
 
-var listenPath = flag.String("listen", ":8080", `server listen path, e.g. ":8080" or "/var/run/logserver.sock"`)
+var optionListen = flag.String("listen", ":8080", `server listen path, e.g. ":8080" or "/var/run/logserver.sock"`)
+var optionDir = flag.String("dir", "./data", `root directory for logs data`)
 
 func usage() {
 
@@ -28,20 +29,30 @@ func main() {
 	flag.Usage = usage
 	flag.Parse()
 
+	log.Printf("option listen=%s\n", *optionListen)
+	log.Printf("option dir=%s\n", *optionDir)
+
 	start()
 
 }
 
 func start() {
 
-	log.Printf("PID: %d", os.Getpid())
+	var err error
+	var addr string = *optionListen
+	var dir string = *optionDir
 
-	addr := *listenPath
-	log.Printf("Listen: trying to listen on %s\n", addr)
+	log.Printf("pid: %d", os.Getpid())
 
-	err := server.Listen(addr)
+	err = os.MkdirAll(dir, 0755)
+	if err != nil && !os.IsExist(err) {
+		log.Fatal("create data directory failed: %s\n", err)
+	}
+
+	log.Printf("listen: trying to listen on %s\n", addr)
+	err = server.Listen(addr)
 	if err != nil {
-		log.Fatal("Listen: ", err)
+		log.Fatal("listen: ", err)
 	}
 
 }
