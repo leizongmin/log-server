@@ -11,7 +11,7 @@ import (
 	"os"
 )
 
-var optionListen = flag.String("listen", ":8080", `server listen path, e.g. ":8080" or "/var/run/logserver.sock"`)
+var optionListen = flag.String("listen", ":8080", `server listen path, e.g ":8080" or "/var/run/logserver.sock"`)
 var optionDir = flag.String("dir", "./data", `root directory for logs data`)
 
 func usage() {
