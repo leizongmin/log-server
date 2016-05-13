@@ -91,8 +91,8 @@ func (t TimeInfo) Format(f string) string {
 
 }
 
-// GetTimeFormat returns a time string with specified format
-func GetTimeFormat(f string) string {
+// GetFormattedTime returns a time string with specified format
+func GetFormattedTime(f string) string {
 
 	return GetTime().Format(f)
 
