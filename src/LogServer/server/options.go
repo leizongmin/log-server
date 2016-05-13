@@ -12,8 +12,9 @@ type ServerOptions struct {
 }
 
 type LogFile struct {
-	path   string
-	Handle *os.File
+	Path     string
+	FileName string
+	Handle   *os.File
 }
 
 // Options stores the config for server

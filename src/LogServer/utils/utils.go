@@ -6,6 +6,7 @@ package utils
 import (
 	"os"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -18,6 +19,18 @@ func Mkdirp(dir string) error {
 	}
 
 	return nil
+
+}
+
+const pathSeparator = string(os.PathSeparator)
+
+func MkdirpByFileName(fileName string) error {
+
+	s := strings.Split(fileName, pathSeparator)
+	s2 := s[:len(s)-1]
+
+	dir := strings.Join(s2, pathSeparator)
+	return Mkdirp(dir)
 
 }
 
