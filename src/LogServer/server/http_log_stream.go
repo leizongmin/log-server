@@ -5,17 +5,12 @@ package server
 
 import (
 	"bufio"
+	"encoding/json"
 	"fmt"
 	"net/http"
-	"time"
 )
 
 func logStream(w http.ResponseWriter, r *http.Request) {
-
-	flusher, ok := w.(http.Flusher)
-	if !ok {
-		panic("expected http.ResponseWriter to be an http.Flusher")
-	}
 
 	w.Header().Set("Connection", "Keep-Alive")
 	w.Header().Set("Transfer-Encoding", "chunked")
@@ -23,10 +18,43 @@ func logStream(w http.ResponseWriter, r *http.Request) {
 
 	scaner := bufio.NewScanner(r.Body)
 	for scaner.Scan() {
+
 		text := scaner.Text()
-		fmt.Fprintf(w, "time: %s, data: %s\n", time.UnixDate, text)
-		flusher.Flush()
-		println(text)
+
+		log := LogLine{}
+		if err := json.Unmarshal([]byte(text), &log); err != nil {
+			responseLine(w, fmt.Sprintf("error: %s", err))
+			continue
+		}
+
+		if log.Path == "" {
+			responseLine(w, `error: missing "path"`)
+			continue
+		}
+		if log.ID == "" {
+			responseLine(w, `error: missing "id"`)
+			continue
+		}
+		if len(log.Data) < 1 {
+			responseLine(w, `error: missing "data"`)
+			continue
+		}
+
+		WriteLog(log)
+		responseLine(w, fmt.Sprintf("success: %s", log.ID))
+
 	}
+
+}
+
+func responseLine(w http.ResponseWriter, s string) {
+
+	flusher, ok := w.(http.Flusher)
+	if !ok {
+		panic("expected http.ResponseWriter to be an http.Flusher")
+	}
+
+	fmt.Fprintf(w, s)
+	flusher.Flush()
 
 }

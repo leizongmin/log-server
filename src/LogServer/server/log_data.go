@@ -3,6 +3,8 @@
 
 package server
 
+import "fmt"
+
 // A LogLine describes a log data item
 type LogLine struct {
 	ID   string                 `json:"id"`
@@ -23,6 +25,8 @@ func WriteLogFlat(id string, path string, data map[string]interface{}) error {
 
 // WriteLog writes a log record with a LogLine struct
 func WriteLog(log LogLine) error {
+
+	fmt.Println(log)
 
 	return nil
 

@@ -14,7 +14,6 @@ import (
 	"os/signal"
 	"strings"
 	"syscall"
-	"time"
 )
 
 func Start(options ServerOptions) error {
@@ -43,8 +42,6 @@ func listen(addr string) error {
 	srv := http.Server{
 		Addr:           addr,
 		Handler:        mux,
-		ReadTimeout:    time.Second * 10,
-		WriteTimeout:   time.Second * 10,
 		MaxHeaderBytes: 10240,
 	}
 

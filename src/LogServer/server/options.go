@@ -3,9 +3,17 @@
 
 package server
 
+import "os"
+
 type ServerOptions struct {
-	Listen string `json:"listen"`
-	Dir    string `json:"dir"`
+	Listen   string
+	Dir      string
+	LogFiles map[string]LogFile
+}
+
+type LogFile struct {
+	path   string
+	Handle *os.File
 }
 
 // Options stores the config for server
