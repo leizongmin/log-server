@@ -4,7 +4,6 @@
 package server
 
 import (
-	"bufio"
 	"errors"
 	"fmt"
 	"log"
@@ -16,27 +15,6 @@ import (
 	"syscall"
 	"time"
 )
-
-func logStream(w http.ResponseWriter, r *http.Request) {
-
-	flusher, ok := w.(http.Flusher)
-	if !ok {
-		panic("expected http.ResponseWriter to be an http.Flusher")
-	}
-
-	w.Header().Set("Connection", "Keep-Alive")
-	w.Header().Set("Transfer-Encoding", "chunked")
-	w.WriteHeader(http.StatusOK)
-
-	scaner := bufio.NewScanner(r.Body)
-	for scaner.Scan() {
-		text := scaner.Text()
-		fmt.Fprintf(w, "time: %s, data: %s\n", time.UnixDate, text)
-		flusher.Flush()
-		println(text)
-	}
-
-}
 
 func Listen(addr string) error {
 

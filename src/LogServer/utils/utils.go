@@ -5,7 +5,7 @@ package utils
 
 import "os"
 
-// Like `os.MkdirAll()`, but if directory already exists don't returns error
+// Mkdirp Like `os.MkdirAll()`, but if directory already exists don't returns error
 func Mkdirp(dir string) error {
 
 	err := os.MkdirAll(dir, 0755)
