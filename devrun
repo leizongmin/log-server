@@ -2,4 +2,4 @@
 
 GOPATH="$(pwd):$GOPATH"
 
-go run logserver.go
+go run logserver.go $@
