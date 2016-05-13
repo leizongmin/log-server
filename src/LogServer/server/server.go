@@ -16,7 +16,25 @@ import (
 	"time"
 )
 
-func Listen(addr string) error {
+func Start(options ServerOptions) error {
+
+	var err error
+
+	Options = options
+
+	if err = setDir(options.Dir); err != nil {
+		return err
+	}
+
+	if err = listen(options.Listen); err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
+func listen(addr string) error {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/log/stream", logStream)

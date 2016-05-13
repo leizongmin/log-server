@@ -5,7 +5,6 @@ package main
 
 import (
 	"LogServer/server"
-	"LogServer/utils"
 	"flag"
 	"fmt"
 	"log"
@@ -48,12 +47,11 @@ func start() {
 
 	log.Printf("pid: %d", os.Getpid())
 
-	if err = utils.Mkdirp(dir); err != nil {
-		log.Fatal("create data directory failed: %s\n", err)
-	}
-
-	log.Printf("listen: trying to listen on %s\n", addr)
-	err = server.Listen(addr)
+	log.Printf("starting server...")
+	err = server.Start(server.ServerOptions{
+		Listen: addr,
+		Dir:    dir,
+	})
 	if err != nil {
 		log.Fatal("listen: ", err)
 	}
