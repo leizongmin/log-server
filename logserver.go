@@ -2,6 +2,7 @@ package main
 
 import (
 	"LogServer/server"
+	"LogServer/utils"
 	"flag"
 	"fmt"
 	"log"
@@ -44,8 +45,7 @@ func start() {
 
 	log.Printf("pid: %d", os.Getpid())
 
-	err = os.MkdirAll(dir, 0755)
-	if err != nil && !os.IsExist(err) {
+	if err = utils.Mkdirp(dir); err != nil {
 		log.Fatal("create data directory failed: %s\n", err)
 	}
 
