@@ -12,6 +12,8 @@ import (
 
 func logStream(w http.ResponseWriter, r *http.Request) {
 
+	var err error
+
 	w.Header().Set("Connection", "Keep-Alive")
 	w.Header().Set("Transfer-Encoding", "chunked")
 	w.WriteHeader(http.StatusOK)
@@ -22,7 +24,7 @@ func logStream(w http.ResponseWriter, r *http.Request) {
 		text := scaner.Text()
 
 		log := LogLine{}
-		if err := json.Unmarshal([]byte(text), &log); err != nil {
+		if err = json.Unmarshal([]byte(text), &log); err != nil {
 			responseLine(w, fmt.Sprintf("error: %s", err))
 			continue
 		}
@@ -40,7 +42,10 @@ func logStream(w http.ResponseWriter, r *http.Request) {
 			continue
 		}
 
-		WriteLog(log)
+		if err = WriteLog(log); err != nil {
+			responseLine(w, fmt.Sprintf("error: %s", err))
+			continue
+		}
 		responseLine(w, fmt.Sprintf("success: %s", log.ID))
 
 	}

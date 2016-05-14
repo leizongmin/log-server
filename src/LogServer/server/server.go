@@ -20,7 +20,8 @@ func Start(options ServerOptions) error {
 
 	var err error
 
-	Options = options
+	Options.Dir = options.Dir
+	Options.Listen = options.Listen
 
 	if err = setDir(options.Dir); err != nil {
 		return err

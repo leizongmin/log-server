@@ -18,4 +18,6 @@ type LogFile struct {
 }
 
 // Options stores the config for server
-var Options = ServerOptions{}
+var Options = ServerOptions{
+	LogFiles: make(map[string]LogFile),
+}
