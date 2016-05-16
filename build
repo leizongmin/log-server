@@ -1,0 +1,9 @@
+#!/bin/sh
+
+export GOPATH="$(pwd):$GOPATH"
+export GOOS=linux
+export GOARCH=386
+export CGO_ENABLED=0
+
+go build -o bin/logserver logserver.go
+
