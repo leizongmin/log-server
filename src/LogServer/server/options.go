@@ -6,9 +6,11 @@ package server
 import "os"
 
 type ServerOptions struct {
-	Listen   string
-	Dir      string
-	LogFiles map[string]LogFile
+	Listen         string
+	Dir            string
+	Duration       int64
+	FileNameFormat string
+	LogFiles       map[string]LogFile
 }
 
 type LogFile struct {

@@ -22,6 +22,10 @@ func Start(options ServerOptions) error {
 
 	Options.Dir = options.Dir
 	Options.Listen = options.Listen
+	Options.Duration = options.Duration
+	Options.FileNameFormat = options.FileNameFormat
+
+	initTicker()
 
 	if err = setDir(options.Dir); err != nil {
 		return err

@@ -65,8 +65,6 @@ func WriteLog(log LogLine) error {
 
 func syncLogFiles() {
 
-	log.Printf("sync log files...")
-
 	for path, file := range Options.LogFiles {
 
 		fileName := getCurrentLogFileName(path)
@@ -84,7 +82,7 @@ func syncLogFiles() {
 
 func getCurrentLogFileName(path string) string {
 
-	timeString := utils.GetFormattedTime("Ymd/Ymd-Hi")
+	timeString := utils.GetFormattedTime(Options.FileNameFormat)
 	fileName := fmt.Sprintf("%s/%s/%s.log", Options.Dir, path, timeString)
 
 	return fileName
@@ -123,9 +121,9 @@ func openLogFileForWrite(path string, fileName string) {
 
 var ticker *time.Ticker
 
-func init() {
+func initTicker() {
 
-	ticker = time.NewTicker(time.Second * 5)
+	ticker = time.NewTicker(time.Second * time.Duration(Options.Duration))
 	go func() {
 		for {
 			<-ticker.C
