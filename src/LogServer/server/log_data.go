@@ -63,7 +63,9 @@ func WriteLog(log LogLine) error {
 
 }
 
-func updateLogFilesName() {
+func syncLogFiles() {
+
+	log.Printf("sync log files...")
 
 	for path, file := range Options.LogFiles {
 
@@ -72,7 +74,8 @@ func updateLogFilesName() {
 		if fileName != file.FileName {
 			file.Handle.Sync()
 			file.Handle.Close()
-			openLogFileForWrite(path, fileName)
+			delete(Options.LogFiles, path)
+			log.Printf("close log file: %s\n", file.FileName)
 		}
 
 	}
@@ -81,7 +84,7 @@ func updateLogFilesName() {
 
 func getCurrentLogFileName(path string) string {
 
-	timeString := utils.GetFormattedTime("Ymd/Ymd-H")
+	timeString := utils.GetFormattedTime("Ymd/Ymd-Hi")
 	fileName := fmt.Sprintf("%s/%s/%s.log", Options.Dir, path, timeString)
 
 	return fileName
@@ -118,17 +121,15 @@ func openLogFileForWrite(path string, fileName string) {
 
 }
 
-var timer *time.Timer
+var ticker *time.Ticker
 
 func init() {
 
-	updateLogFilesName()
-
-	timer = time.NewTimer(time.Second * 10)
+	ticker = time.NewTicker(time.Second * 5)
 	go func() {
 		for {
-			<-timer.C
-			updateLogFilesName()
+			<-ticker.C
+			syncLogFiles()
 		}
 	}()
 
